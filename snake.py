@@ -6,23 +6,41 @@ from pygame.locals import *
 
 class Player:
     #ddddd
-    x = 10
+    x = []
     # x axis
-    y = 10
+    y = []
     # y axis
-    speed = 0.3
+    step = 27
     direction = 0
-    def update(self):
-        if self.direction == 0:
-            self.x = self.x + self.speed
-        if self.direction == 1:
-            self.x = self.x - self.speed
-        if self.direction == 2:
-            self.y = self.y - self.speed
-        if self.direction == 3:
-            self.y = self.y + self.speed
-        
+    update_count_max = 2
+    update_count = 0
 
+    def __init__(self,length):
+        self.length = length
+        for i in range(0,length):
+            self.x.append(0)
+            self.y.append(0)
+
+    def update(self):
+        self.update_count += 1
+
+        if self.update_count> self.update_count_max:
+
+            for i in range(self.length-1,0,-1):
+                self.x[i] = self.x[i-1]
+                self.y[i] = self.y[i-1]
+
+
+            if self.direction == 0:
+                self.x[0] = self.x[0] + self.step
+            if self.direction == 1:
+                self.x[0] = self.x[0] - self.step
+            if self.direction == 2:
+                self.y[0] = self.y[0] - self.step
+            if self.direction == 3:
+                self.y[0] = self.y[0] + self.step
+        
+            self.update_count = 0
     def move_right(self):
         self.direction = 0
     def move_left(self):
@@ -31,6 +49,9 @@ class Player:
         self.direction = 2
     def move_down(self):
         self.direction = 3
+    def draw(self,surface,image):
+        for i in range(0,self.length):
+            surface.blit(image,(self.x[i],self.y[i]))
     
 
 class App: 
@@ -42,7 +63,7 @@ class App:
         self._running = True
         self._display_surf = None
         self._image_surf = None
-        self.player = Player()
+        self.player = Player(10)
         self.clock = pygame.time.Clock()
     
     def on_init(self):
@@ -62,7 +83,7 @@ class App:
 
     def on_render(self):
         self._display_surf.fill((0,0,0))
-        self._display_surf.blit(self._image_surf,(self.player.x,self.player.y))
+        self.player.draw(self._display_surf,self._image_surf)
         pygame.display.flip()
 
     def on_cleanup(self):
@@ -92,8 +113,7 @@ class App:
                 self._running =  False
             self.on_loop()
             self.on_render()
-
-        self.clock.tick(60)
+            self.clock.tick(60)
         self.on_cleanup()
 
 
