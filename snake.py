@@ -7,12 +7,12 @@ import random
 
 # --------------------------------------------------------------Player
 class Player:
-    """Creates the player snake, and contains its controls"""
+    """Creates the player snake, and contains its controls
+    Output:"""
 
     def __init__(self,length):
 
         self.length = length
-        #ddddd
         self.x = []
         # x axis
         self.y = []
@@ -57,35 +57,50 @@ class Player:
         """Sets direction to the left of the screen"""
         self.direction = 1
     def move_up(self):
+        """Sets direction to the up of the screen"""
         self.direction = 2
     def move_down(self):
+        """Sets direction to the down of the screen"""
         self.direction = 3
 
-    # Draws the head as orange and body
     def draw(self,surface,image,image2):
+        """Draws the head as orange and the rest of the body as red"""
         surface.blit(image,(self.x[0],self.y[0]))
-        for i in range(1,self.length-1):
+        for i in range(1, self.length - 1):
             surface.blit(image2,(self.x[i],self.y[i]))
 
 class Apple:
-    # Creates the objective of the game: get as many apples as possible without any collision
+    """Creates the objective of the game: get as many apples as possible without any collision"""
     x = 0
     y = 0
     step = 27  
+
     def __init__(self, x, y):
         self.x = x * self.step 
         self.y = y * self.step
+
     def draw(self, surface, image):
         surface.blit(image,(self.x, self.y)) 
 
 class Game:
+    """Sets up the game's physics"""
     def is_collision(self, x1, x2, y1, y2, bsize):
+            """Detects if the coordinates of x1 y1(player) 
+            overlap with the coordinates of x2 y2(an apple/the player itself)
+            Input:
+                    x1=Integer
+                    x2=Integer
+                    y1=Integer
+                    y2=Integer
+                    bsize=Integer"""
             if x1 >= x2 and x1 <= x2 + bsize:
                 if y1 >= y2 and y1 <= y2 + bsize:
                     return True
             return False
 
     def out_of_bounds_check(self, w_width, w_height, x, y):
+        """Detects if the coordinates of the snake go past the dimensions of the game window
+        """
         if x > w_width or x < 0:
             return True
         if y > w_height or y < 0:
@@ -121,10 +136,12 @@ class App:
         self._apple_surf.fill((0, 255, 0))
 
     def setup_menu(self):
+        """Creates the menu for the game"""
         self.menu = pygame_menu.Menu('Snake', self.window_width, self.window_height,
                                     theme=pygame_menu.themes.THEME_BLUE)
         self.menu.add.button('Play', self.start_the_game)
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
+        
 
     def start_the_game(self):
         self.menu.disable()
@@ -159,7 +176,7 @@ class App:
                 print("You lose! Collision: ")
                 print("x[0] (" + str(self.player.x[0]) + "," + str(self.player.y[0]) + ")")
                 print("x[" + str(i) + "] (" + str(self.player.x[i]) + "," + str(self.player.y[i]) + ")")
-                exit(0)
+                self._running = False
         # Detects if the snake has touched the game window boarders (game ends)
         if self.game.out_of_bounds_check(self.window_width, self.window_height, self.player.x[0], self.player.y[0]):
             print("You have collided with the wall, game over")
@@ -181,6 +198,7 @@ class App:
         pygame.quit()
     
     def on_execute(self):
+
         if self.on_init() == False:
             self._running = False
             return
@@ -188,6 +206,7 @@ class App:
 
         while True:
             self.reset()
+            self.menu.enable()
             self.menu.mainloop(self._display_surf)
 
             while(self._running):
@@ -211,7 +230,7 @@ class App:
                 self.on_loop()
                 self.on_render()
                 self.clock.tick(45)
-            self.on_cleanup()
+        self.on_cleanup()
 
 
 if __name__ == "__main__":
