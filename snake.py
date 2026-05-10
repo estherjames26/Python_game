@@ -108,11 +108,11 @@ class Game:
         return False
 
 class App: 
-    window_width = 800
-    window_height= 600
-    player=0
 
     def __init__(self):
+        self.window_width = 800
+        self.window_height= 600
+        self.player=0
         self._running = True
         self._display_surf = None
         self._body_surf = None
@@ -127,7 +127,7 @@ class App:
     def on_init(self):
         pygame.init()
         self._display_surf = pygame.display.set_mode((self.window_width,self.window_height),pygame.HWSURFACE)
-        pygame.display.set_caption('Pygame pythonspot.com example')
+        pygame.display.set_caption('Snake Game')
         self._running = True
         self._head_surf = pygame.Surface((25, 25))
         self._head_surf.fill((255, 153, 28))
@@ -140,6 +140,8 @@ class App:
         """Creates the menu for the game"""
         self.menu = pygame_menu.Menu('Snake', self.window_width, self.window_height,
                                     theme=pygame_menu.themes.THEME_BLUE)
+        self.menu.add.label("How to play:\nW=Up, A=Left, S=Down, D=Right\n Aim for green squares (apples) for points\n" \
+        "Avoid the edges of the screen and colliding with yourself")
         self.menu.add.button('Play', self.start_the_game)
         self.menu.add.button('Quit', pygame_menu.events.EXIT)
         
@@ -179,15 +181,14 @@ class App:
                 print("x[0] (" + str(self.player.x[0]) + "," + str(self.player.y[0]) + ")")
                 print("x[" + str(i) + "] (" + str(self.player.x[i]) + "," + str(self.player.y[i]) + ")")
                 self._running = False
-                self.score = 0
+                
 
         # Detects if the snake has touched the game window boarders (game ends)
         if self.game.out_of_bounds_check(self.window_width, self.window_height, self.player.x[0], self.player.y[0]):
             print("You have collided with the wall, game over")
             self._running = False
-            self.score = 0
+            
  
-        pass
 
 
 
@@ -202,8 +203,20 @@ class App:
         self._display_surf.blit(score_text, (10, 10))
         pygame.display.flip()
 
-    def on_cleanup(self):
-        pygame.quit()
+    """def on_cleanup(self):
+        pygame.quit()"""
+    
+    def game_over_screen(self):
+        font_big = pygame.font.Font(None,72)
+        font_small = pygame.font.Font(None,36)
+        self._display_surf.fill((0,0,0))
+        game_over_text = font_big.render('GAME OVER',True, (255,0,0))
+        score_text = font_small.render(f"Final Score: {self.score}",True,(255,255,255))
+        self._display_surf.blit(game_over_text, (self.window_width//2 - game_over_text.get_width()//2, 200))
+        self._display_surf.blit(score_text, (self.window_width//2 - score_text.get_width()//2, 300))
+        pygame.display.flip()
+        pygame.time.wait(2000)
+        self.score=0
     
     def on_execute(self):
 
@@ -237,8 +250,10 @@ class App:
                     self._running =  False
                 self.on_loop()
                 self.on_render()
-                self.clock.tick(45)
-        self.on_cleanup()
+                self.clock.tick(30)
+            self.game_over_screen()
+
+
 
 
 if __name__ == "__main__":
