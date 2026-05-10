@@ -118,6 +118,7 @@ class App:
         self._body_surf = None
         self._apple_surf = None
         self._head_surf = None
+        self.score=0
         self.game = Game()
         self.player = Player(10)
         self.apple = Apple(5,5)
@@ -165,9 +166,10 @@ class App:
                 self.apple.x = random.randint(2,9) * 25
                 self.apple.y = random.randint(2,9) * 25
                 self.player.length = self.player.length + 1
-                # Another block will be added based on the direction of movement
+                # Another block will be added to the snake
                 self.player.x.append(self.player.x[self.player.length-2])
                 self.player.y.append(self.player.y[self.player.length-2])
+                self.score+=100
                 
  
         # Detects is the snake has collided with itself (game ends)
@@ -177,10 +179,13 @@ class App:
                 print("x[0] (" + str(self.player.x[0]) + "," + str(self.player.y[0]) + ")")
                 print("x[" + str(i) + "] (" + str(self.player.x[i]) + "," + str(self.player.y[i]) + ")")
                 self._running = False
+                self.score = 0
+
         # Detects if the snake has touched the game window boarders (game ends)
         if self.game.out_of_bounds_check(self.window_width, self.window_height, self.player.x[0], self.player.y[0]):
             print("You have collided with the wall, game over")
             self._running = False
+            self.score = 0
  
         pass
 
@@ -192,6 +197,9 @@ class App:
         self._display_surf.fill((0,0,0))
         self.player.draw(self._display_surf, self._head_surf,self._body_surf)
         self.apple.draw(self._display_surf,self._apple_surf)
+        font = pygame.font.Font(None, 36)
+        score_text = font.render(f'Score: {self.score}', True, (255, 255, 255))
+        self._display_surf.blit(score_text, (10, 10))
         pygame.display.flip()
 
     def on_cleanup(self):
