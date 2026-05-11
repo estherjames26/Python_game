@@ -17,7 +17,7 @@ class Player:
         self.y = []
         # y axis
         self.step = 27
-        self.direction = 0
+        self.direction = "Left"
         self.update_count_max = 2
         self.update_count = 0
         self.start_x=300
@@ -40,29 +40,29 @@ class Player:
                 self.y[i] = self.y[i-1]
 
 
-            if self.direction == 0:
+            if self.direction == "Left":
                 self.x[0] = self.x[0] + self.step
-            if self.direction == 1:
+            if self.direction == "Right":
                 self.x[0] = self.x[0] - self.step
-            if self.direction == 2:
+            if self.direction == "Up":
                 self.y[0] = self.y[0] - self.step
-            if self.direction == 3:
+            if self.direction == "Down":
                 self.y[0] = self.y[0] + self.step
         
             self.update_count = 0
 
     def move_right(self):
         """Sets direction to the right of the screen"""
-        self.direction = 0
+        self.direction = "Left"
     def move_left(self):
         """Sets direction to the left of the screen"""
-        self.direction = 1
+        self.direction = "Right"
     def move_up(self):
         """Sets direction to the up of the screen"""
-        self.direction = 2
+        self.direction = "Up"
     def move_down(self):
         """Sets direction to the down of the screen"""
-        self.direction = 3
+        self.direction = "Down"
 
     def draw(self,surface,image,image2):
         """Draws the head as orange and the rest of the body as red"""
